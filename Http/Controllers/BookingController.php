@@ -40,7 +40,8 @@ class BookingController extends Controller
             $response = $this->repository->getUsersJobs($user_id);
 
         }
-        elseif($request->__authenticatedUser->user_type == env('ADMIN_ROLE_ID') || $request->__authenticatedUser->user_type == env('SUPERADMIN_ROLE_ID'))
+
+        if($request->__authenticatedUser->user_type == env('ADMIN_ROLE_ID') || $request->__authenticatedUser->user_type == env('SUPERADMIN_ROLE_ID'))
         {
             $response = $this->repository->getAll($request);
         }
@@ -52,7 +53,7 @@ class BookingController extends Controller
      * @param $id
      * @return mixed
      */
-    public function show($id)
+    public function show(Job $id)
     {
         $job = $this->repository->with('translatorJobRel.user')->find($id);
 
@@ -195,6 +196,7 @@ class BookingController extends Controller
     public function distanceFeed(Request $request)
     {
         $data = $request->all();
+        $jobid = '';
 
         if (isset($data['distance']) && $data['distance'] != "") {
             $distance = $data['distance'];
@@ -217,7 +219,7 @@ class BookingController extends Controller
         }
 
         if ($data['flagged'] == 'true') {
-            if($data['admincomment'] == '') return "Please, add comment";
+            if($data['admincomment'] == '') return response("Please, add comment");
             $flagged = 'yes';
         } else {
             $flagged = 'no';
@@ -287,7 +289,7 @@ class BookingController extends Controller
             $this->repository->sendSMSNotificationToTranslator($job);
             return response(['success' => 'SMS sent']);
         } catch (\Exception $e) {
-            return response(['success' => $e->getMessage()]);
+            return response(['error' => $e->getMessage()]);
         }
     }
 
