@@ -1,4 +1,4 @@
-# CodeTest---DigitalTolk
+# CodeTest
 
 The code to refactor was good. Its comprehensive.
 The oneliner code are neat to see. There are just quite a
